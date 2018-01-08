@@ -7,6 +7,7 @@ from django_prices.forms import PriceField
 from payments import PaymentError, PaymentStatus
 from satchless.item import InsufficientStock
 
+from ..widgets import PhonePrefixWidget
 from ...cart.forms import QuantityField
 from ...core.forms import AjaxSelect2ChoiceField
 from ...discount.models import Voucher
@@ -18,6 +19,7 @@ from ...order.utils import (
     move_order_line_to_group, recalculate_order, remove_empty_groups
 )
 from ...product.models import Product, ProductVariant, Stock
+from ...userprofile.i18n import AddressForm, PossiblePhoneNumberFormField
 
 
 class OrderNoteForm(forms.ModelForm):
@@ -356,3 +358,8 @@ class AddVariantToDeliveryGroupForm(forms.Form):
         add_variant_to_delivery_group(
             self.group, variant, quantity, self.discounts)
         recalculate_order(self.group.order)
+
+
+class DashboardAddressForm(AddressForm):
+    phone = PossiblePhoneNumberFormField(
+        widget=PhonePrefixWidget, required=False)
